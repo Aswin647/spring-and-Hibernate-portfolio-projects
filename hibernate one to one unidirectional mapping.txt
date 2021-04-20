@@ -33,7 +33,7 @@ public class Testjdbc {
 
 
 
-package entity.hibernate.demo;
+package com.luv2code.hibernate.demo
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -106,7 +106,7 @@ public String toString() {
 
 
 
-package entity.hibernate.demo;
+package com.luv2code.hibernate.demo
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -215,7 +215,7 @@ public String toString() {
 
 
 
-package main.hibernate.demo;
+package com.luv2code.hibernate.demo;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -294,7 +294,7 @@ public class CreateStudentDemo {
 
 
 
-package main.hibernate.demo;
+package com.luv2code.hibernate.demo;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
