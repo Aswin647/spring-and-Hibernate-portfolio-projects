@@ -1,0 +1,109 @@
+ package springdemo.mvc;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+@Controller()
+@RequestMapping("/hello")
+public class HelloWorldController {
+
+@RequestMapping("/showForm")		
+public String showForm() {
+return "helloworld-form";
+}
+
+@RequestMapping("/processForm")
+public String processForm() {
+return "helloworld";	
+}
+
+@RequestMapping("/processFormVersionTwo")
+public String letsShoutDude(HttpServletRequest request, Model model) {
+
+// read the request parameter from the html form	
+String thename= request.getParameter("Studentname")	;
+
+// convert the data to the upperform 	
+thename= thename.toUpperCase();
+
+// create the message
+String Result="yo!"+ thename;
+
+//add the message to the model attribute
+model.addAttribute("message",Result);
+		
+return"helloworld";	
+	
+}
+@RequestMapping("/processFormVersionThree")
+public String processFormVersionThree(@RequestParam("Studentname")String thename,
+		Model model){
+
+// convert the data to the upperform	
+thename= thename.toUpperCase();
+
+// create the message
+String Result="hey the version three data added!"+ thename;
+
+//add the message to the model attribute
+model.addAttribute("message",Result);
+		
+return"helloworld";	
+
+
+}
+}
+
+// below code of helloworld-form .jsp//
+<!DOCTYPE html> 
+
+<html>
+<head>
+ 
+<title>hello world-input form </title>
+
+<body>
+
+<form action= "processFormVersionThree"  Method="GET">
+
+<input type= "text" name="Studentname"
+Placeholder="what's your name ?"/>
+
+<input type="submit"/>
+
+
+</form>
+
+</body>
+
+</head>
+
+
+// below code of helloworld.jsp
+
+<!DOCTYPE html>
+<html>
+
+<body>
+
+Hello World of Spring!
+
+<br><br>
+
+Student name: ${param.Studentname}
+
+<br><br>
+
+The Message:${message}
+
+</body>
+
+</html>
+
+
+
+
