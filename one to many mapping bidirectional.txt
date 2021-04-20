@@ -1,0 +1,698 @@
+package com.luv2code.jdbc;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+
+public class Testjdbc {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		
+		String jdbcUrl = "jdbc:mysql://localhost:3306/hb-03-one-to-many?useSSL=false&serverTimezone=UTC";
+		String user = "hbstudent";
+		String pass = "hbstudent";
+		
+		try {
+			System.out.println("Connecting to database: " + jdbcUrl);
+			
+			Connection myConn =
+					DriverManager.getConnection(jdbcUrl, user, pass);
+			
+			System.out.println("Connection successful!!!");
+			
+		}
+		catch (Exception exc) {
+			exc.printStackTrace();
+		}
+
+	}
+
+}
+
+
+package com.luv2code.hibernate.demo;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="instructor_detail")
+public class InstructorDetails {
+
+	
+@Id
+@GeneratedValue(strategy=GenerationType.IDENTITY)
+@Column(name="id")
+private int id;
+
+@Column(name="youtube_channel")
+private String youtubechannel;
+
+@Column(name="hobby")
+private String hobby;
+
+@OneToOne(mappedBy="instructorDetail",cascade= {CascadeType.MERGE,CascadeType.DETACH,CascadeType.PERSIST,CascadeType.REFRESH})
+private Instructor instructor;
+
+public InstructorDetails() {
+	
+}
+
+
+public InstructorDetails(String youtubechannel, String hobby) {
+	super();
+	this.youtubechannel = youtubechannel;
+	this.hobby = hobby;
+}
+
+
+
+public Instructor getInstructor() {
+	return instructor;
+}
+
+
+public void setInstructor(Instructor instructor) {
+	this.instructor = instructor;
+}
+
+
+public int getId() {
+	return id;
+}
+
+public void setId(int id) {
+	this.id = id;
+}
+
+public String getYoutubechannel() {
+	return youtubechannel;
+}
+
+public void setYoutubechannel(String youtubechannel) {
+	this.youtubechannel = youtubechannel;
+}
+
+public String getHobby() {
+	return hobby;
+}
+
+public void setHobby(String hobby) {
+	this.hobby = hobby;
+}
+
+@Override
+public String toString() {
+	return "InstructorDetails [id=" + id + ", youtubechannel=" + youtubechannel + ", hobby=" + hobby + "]";
+}
+
+
+
+		
+}
+
+
+
+package com.luv2code.hibernate.demo;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="instructor")
+public class Instructor {
+	
+@Id
+@GeneratedValue(strategy=GenerationType.IDENTITY)
+@Column(name="id")	
+private int id;	
+
+@Column(name="first_name")
+private String firstName;
+
+@Column(name="last_name")
+private String lastName;
+
+@Column(name="email")
+private String email;
+
+@OneToOne(cascade=CascadeType.ALL)
+@JoinColumn(name="instructor_detail_id")
+private InstructorDetails instructorDetail; 
+
+@OneToMany(mappedBy= "instructor", cascade= {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
+private List<Course> Courses;
+
+
+
+public Instructor() {
+	
+}
+	
+public Instructor(String firstName, String lastName, String email) {
+	this.firstName = firstName;
+	this.lastName = lastName;
+	this.email = email;
+}
+
+
+public int getId() {
+	return id;
+}
+
+
+public void setId(int id) {
+	this.id = id;
+}
+
+
+public String getFirstName() {
+	return firstName;
+}
+
+
+public void setFirstName(String firstName) {
+	this.firstName = firstName;
+}
+
+
+public String getLastName() {
+	return lastName;
+}
+
+
+public void setLastName(String lastName) {
+	this.lastName = lastName;
+}
+
+
+public String getEmail() {
+	return email;
+}
+
+
+public void setEmail(String email) {
+	this.email = email;
+}
+
+
+
+
+public InstructorDetails getInstructorDetail() {
+	return instructorDetail;
+}
+
+public void setInstructorDetail(InstructorDetails instructorDetail) {
+	this.instructorDetail = instructorDetail;
+}
+
+@Override
+public String toString() {
+	return "Instructor [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email
+			+ ", instructorDetail=" + instructorDetail + "]";
+}
+
+public List<Course> getCourses() {
+	return Courses;
+}
+
+public void setCourses(List<Course> courses) {
+	Courses = courses;
+}
+
+// add convienence method for bi-directional mapping
+
+public void add(Course tempCourse) {
+	
+	if (Courses==null) {
+		Courses=new ArrayList<>();
+		
+	}
+	Courses.add(tempCourse);
+	tempCourse.setInstructor(this);
+	
+}
+
+}
+
+
+
+
+package com.luv2code.hibernate.demo;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="course")
+public class Course {
+
+@Id
+@GeneratedValue(strategy=GenerationType.IDENTITY)
+@Column(name="id")
+private int id;
+
+@Column(name="title")
+private String title;
+
+@ManyToOne(cascade= {CascadeType.DETACH,CascadeType.MERGE,CascadeType.PERSIST,CascadeType.REFRESH})
+@JoinColumn(name="instructor_id")
+private Instructor instructor;
+
+
+public Course() {
+	
+}
+
+
+public Course(String title) {
+	this.title = title;
+}
+
+
+public int getId() {
+	return id;
+}
+
+
+public void setId(int id) {
+	this.id = id;
+}
+
+
+public String getTitle() {
+	return title;
+}
+
+
+public void setTitle(String title) {
+	this.title = title;
+}
+
+
+public Instructor getInstructor() {
+	return instructor;
+}
+
+
+public void setInstructor(Instructor instructor) {
+	this.instructor = instructor;
+}
+
+
+@Override
+public String toString() {
+	return "Course [id=" + id + ", title=" + title + ", instructor=" + instructor + "]";
+}
+
+
+}
+
+
+
+package com.luv2code.com.hibernate.demo;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+
+import com.luv2code.hibernate.demo.Course;
+import com.luv2code.hibernate.demo.Instructor;
+import com.luv2code.hibernate.demo.InstructorDetails;
+import com.luv2code.hibernate.demo.Student;
+
+public class CreateCoursesDemo {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+		
+//create sessionFactory
+   SessionFactory factory= new Configuration()
+                           .configure("hibernate.cfg.xml")
+                           .addAnnotatedClass(Instructor.class)
+                           .addAnnotatedClass(InstructorDetails.class)
+                           .addAnnotatedClass(Course.class)
+                           .buildSessionFactory();
+		
+		
+// create session
+		
+	Session session = factory.getCurrentSession();
+	
+	try {
+		
+		// use the session object to save the java object
+
+	
+	// start a transaction
+		session.beginTransaction();
+	
+		// get the instructor from db
+     int theId=1;
+     
+     Instructor tempInstructor=session.get(Instructor.class, theId);
+     
+     //create some courses
+     
+     Course tempCourse1=  new Course ("football is my drug");
+    Course tempCourse2=  new Course ("fc barcelona is my dealer");	 
+     
+	// add course to instructor
+          tempInstructor.add(tempCourse1);
+          tempInstructor.add(tempCourse2);
+    
+          // saving the courses
+          
+          session.save(tempCourse1);
+          session.save(tempCourse2);
+          
+          
+    
+    
+		// commit transaction
+		session.getTransaction().commit();
+		
+	System.out.println("finally done!!");
+		
+	}
+	
+	finally {
+		// add clean up code
+		
+		session.close();
+		factory.close();
+	}
+		
+	}
+
+}
+
+
+
+
+package com.luv2code.com.hibernate.demo;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+
+import com.luv2code.hibernate.demo.Course;
+import com.luv2code.hibernate.demo.Instructor;
+import com.luv2code.hibernate.demo.InstructorDetails;
+import com.luv2code.hibernate.demo.Student;
+
+public class CreateInstructorDemo {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+		
+//create sessionFactory
+   SessionFactory factory= new Configuration()
+                           .configure("hibernate.cfg.xml")
+                           .addAnnotatedClass(Instructor.class)
+                           .addAnnotatedClass(InstructorDetails.class)
+                           .addAnnotatedClass(Course.class)
+                           .buildSessionFactory();
+		
+		
+// create session
+		
+	Session session = factory.getCurrentSession();
+	
+	try {
+		
+		// use the session object to save the java object
+	
+
+	// create a new student object
+		System.out.println("creating the object");
+	Instructor tempInstructor = new Instructor("ohyea","hurrey", "hurrey.khatiwada1@gmail.com");	
+	InstructorDetails tempInstructorDetails = new InstructorDetails("http//;www.youtube.com", "NFL");
+	
+	// associate the objects
+	
+	
+	tempInstructor.setInstructorDetail(tempInstructorDetails);
+	
+	// start a transaction
+		session.beginTransaction();
+		
+		
+		//save the student object
+		
+	System.out.println("saaving the instructor:" +tempInstructor);	
+		session.save(tempInstructor);
+		
+		
+		// commit transaction
+		session.getTransaction().commit();
+		
+	System.out.println("finally done!!");
+		
+	}
+	
+	finally {
+		// add clean up code
+		
+		session.close();
+		factory.close();
+	}
+		
+	}
+
+}
+
+
+
+package com.luv2code.com.hibernate.demo;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+
+import com.luv2code.hibernate.demo.Course;
+import com.luv2code.hibernate.demo.Instructor;
+import com.luv2code.hibernate.demo.InstructorDetails;
+import com.luv2code.hibernate.demo.Student;
+
+public class deletedemocourse {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+		
+//create sessionFactory
+   SessionFactory factory= new Configuration()
+                           .configure("hibernate.cfg.xml")
+                           .addAnnotatedClass(Instructor.class)
+                           .addAnnotatedClass(InstructorDetails.class)
+                           .addAnnotatedClass(Course.class)
+                           .buildSessionFactory();
+		
+		
+// create session
+		
+	Session session = factory.getCurrentSession();
+	
+	try {
+		
+		// use the session object to save the java object
+
+	
+	// start a transaction
+		session.beginTransaction();
+	
+		// get the course from db
+     int theId=10;
+     
+     Course tempCourse=session.get(Course.class, theId);
+     
+     // delete the course 
+     
+     System.out.println("deleting the course:"+ tempCourse);
+     
+           session.delete(tempCourse);
+    
+		// commit transaction
+		session.getTransaction().commit();
+		
+	System.out.println("finally done!!");
+		
+	}
+	
+	finally {
+		// add clean up code
+		
+		session.close();
+		factory.close();
+	}
+		
+	}
+
+}
+
+
+package com.luv2code.com.hibernate.demo;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+
+import com.luv2code.hibernate.demo.Course;
+import com.luv2code.hibernate.demo.Instructor;
+import com.luv2code.hibernate.demo.InstructorDetails;
+import com.luv2code.hibernate.demo.Student;
+
+public class getinstructorcoursedemo {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+		
+//create sessionFactory
+   SessionFactory factory= new Configuration()
+                           .configure("hibernate.cfg.xml")
+                           .addAnnotatedClass(Instructor.class)
+                           .addAnnotatedClass(InstructorDetails.class)
+                           .addAnnotatedClass(Course.class)
+                           .buildSessionFactory();
+		
+		
+// create session
+		
+	Session session = factory.getCurrentSession();
+	
+	try {
+		
+		// use the session object to save the java object
+
+	
+	// start a transaction
+		session.beginTransaction();
+	
+		// get the instructor from db
+     int theId=1;
+     
+     Instructor tempInstructor=session.get(Instructor.class, theId);
+     
+    System.out.println("Instructor"+ tempInstructor);
+    
+    System.out.println("Courses"+ tempInstructor.getCourses());
+    
+		// commit transaction
+		session.getTransaction().commit();
+		
+	System.out.println("finally done!!");
+		
+	}
+	
+	finally {
+		// add clean up code
+		
+		session.close();
+		factory.close();
+	}
+		
+	}
+
+}
+
+
+
+package com.luv2code.com.hibernate.demo;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+
+import com.luv2code.hibernate.demo.Instructor;
+import com.luv2code.hibernate.demo.InstructorDetails;
+import com.luv2code.hibernate.demo.Student;
+
+public class getinstructordetaildemo {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+		
+//create sessionFactory
+   SessionFactory factory= new Configuration()
+                           .configure("hibernate.cfg.xml")
+                           .addAnnotatedClass(Instructor.class)
+                           .addAnnotatedClass(InstructorDetails.class)
+                           .buildSessionFactory();
+		
+		
+// create session
+		
+	Session session = factory.getCurrentSession();
+	
+	try {
+		
+		
+		
+	
+	// start a transaction
+		session.beginTransaction();
+		
+		int theId=2999;
+		
+		
+		//get instructor by id/primarykey
+		InstructorDetails tempInstructorDetails= session.get(InstructorDetails.class, theId);
+		
+		// print out the instructor detail
+		System.out.println("found instructor" + tempInstructorDetails);
+		
+		// print out the associated instructor
+		System.out.println("the associated instructor:"+ tempInstructorDetails.getInstructor() );
+		
+		// commit transaction
+		session.getTransaction().commit();
+		
+	System.out.println("finally done!!");
+		
+	}
+	
+	catch (Exception exc) {
+		exc.printStackTrace();
+	}
+	
+	
+	finally {
+		// handle the leak issue
+		
+		session.close();
+		
+		factory.close();
+	}
+		
+	}
+
+}
