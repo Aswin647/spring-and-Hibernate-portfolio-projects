@@ -34,7 +34,7 @@ public class Testjdbc {
 
 // entity mapping//
 
-package com.hibernate.demo;
+package com.luv2 code.hibernate.demo;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -123,7 +123,7 @@ public String toString() {
 
 // again entity mapping//
 
-package com.hibernate.demo;
+package com.luv2code.hibernate.demo
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -230,13 +230,13 @@ public String toString() {
 
 // create the data//
 
-package com.hibernate.demo;
+package com.luv2code.hibernate.demo;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-import hibernate.demo.Student;
+import com.luv2code.hibernate.demo.Student;
 
 public class getinstructordetaildemo {
 
@@ -305,13 +305,13 @@ public class getinstructordetaildemo {
 
 // get instructor details//
 
-package com.hibernate.demo;
+package com.luv2code.hibernate.demo;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-import .hibernate.demo.Student;
+import com.luv2code.hibernate.demo.Student;
 
 public class getinstructordetaildemo {
 
@@ -377,13 +377,13 @@ public class getinstructordetaildemo {
 
 // delete demo//
 
-package com.hibernate.demo;
+package com.luv2code.hibernate.demo;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-import hibernate.demo.Student;
+import com.luv2code.hibernate.demo.Student;
 
 public class DeleteDemo {
 
