@@ -1,0 +1,369 @@
+//BELOW THE CODE of test DAtabase//
+
+package hibernate.jdbc;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+
+public class Testjdbc {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		
+		String jdbcUrl = "jdbc:mysql://localhost:3306/hb-01-one-to-one-uni?useSSL=false&serverTimezone=UTC";
+		String user = "hbstudent";
+		String pass = "hbstudent";
+		
+		try {
+			System.out.println("Connecting to database: " + jdbcUrl);
+			
+			Connection myConn =
+					DriverManager.getConnection(jdbcUrl, user, pass);
+			
+			System.out.println("Connection successful!!!");
+			
+		}
+		catch (Exception exc) {
+			exc.printStackTrace();
+		}
+
+	}
+
+//BELOW the code of entity mapping//
+
+
+
+package entity.hibernate.demo;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="instructor_detail")
+public class InstructorDetails {
+
+	
+@Id
+@GeneratedValue(strategy=GenerationType.IDENTITY)
+@Column(name="id")
+private int id;
+
+@Column(name="youtube_channel")
+private String youtubechannel;
+
+@Column(name="hobby")
+private String hobby;
+
+public InstructorDetails() {
+	
+}
+
+public InstructorDetails(String youtubechannel, String hobby) {
+	super();
+	this.youtubechannel = youtubechannel;
+	this.hobby = hobby;
+}
+
+public int getId() {
+	return id;
+}
+
+public void setId(int id) {
+	this.id = id;
+}
+
+public String getYoutubechannel() {
+	return youtubechannel;
+}
+
+public void setYoutubechannel(String youtubechannel) {
+	this.youtubechannel = youtubechannel;
+}
+
+public String getHobby() {
+	return hobby;
+}
+
+public void setHobby(String hobby) {
+	this.hobby = hobby;
+}
+
+@Override
+public String toString() {
+	return "InstructorDetails [id=" + id + ", youtubechannel=" + youtubechannel + ", hobby=" + hobby + "]";
+}
+
+
+
+		
+}
+
+// below the code for entity mapping again//
+
+
+
+package entity.hibernate.demo;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="instructor")
+public class Instructor {
+	
+@Id
+@GeneratedValue(strategy=GenerationType.IDENTITY)
+@Column(name="id")	
+private int id;	
+
+@Column(name="first_name")
+private String firstName;
+
+@Column(name="last_name")
+private String lastName;
+
+@Column(name="email")
+private String email;
+
+@OneToOne(cascade=CascadeType.ALL)
+@JoinColumn(name="instructor_detail_id")
+private InstructorDetails instructorDetail; 
+
+
+public Instructor() {
+	
+}
+	
+public Instructor(String firstName, String lastName, String email) {
+	this.firstName = firstName;
+	this.lastName = lastName;
+	this.email = email;
+}
+
+
+public int getId() {
+	return id;
+}
+
+
+public void setId(int id) {
+	this.id = id;
+}
+
+
+public String getFirstName() {
+	return firstName;
+}
+
+
+public void setFirstName(String firstName) {
+	this.firstName = firstName;
+}
+
+
+public String getLastName() {
+	return lastName;
+}
+
+
+public void setLastName(String lastName) {
+	this.lastName = lastName;
+}
+
+
+public String getEmail() {
+	return email;
+}
+
+
+public void setEmail(String email) {
+	this.email = email;
+}
+
+
+
+
+public InstructorDetails getInstructorDetail() {
+	return instructorDetail;
+}
+
+public void setInstructorDetail(InstructorDetails instructorDetail) {
+	this.instructorDetail = instructorDetail;
+}
+
+@Override
+public String toString() {
+	return "Instructor [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email
+			+ ", instructorDetail=" + instructorDetail + "]";
+}
+
+}
+
+
+// below the code for creating data//
+
+
+
+package main.hibernate.demo;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+
+import com.luv2code.hibernate.demo.Student;
+
+public class CreateStudentDemo {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+		
+//create sessionFactory
+   SessionFactory factory= new Configuration()
+                           .configure("hibernate.cfg.xml")
+                           .addAnnotatedClass(Instructor.class)
+                           .addAnnotatedClass(InstructorDetails.class)
+                           .buildSessionFactory();
+		
+		
+// create session
+		
+	Session session = factory.getCurrentSession();
+	
+	try {
+		
+		// use the session object to save the java object
+	/*	
+	
+	// create a new student object
+		System.out.println("creating the object");
+	Instructor tempInstructor = new Instructor("aswin","Khatiwada", "aswin.khatiwada1@gmail.com");	
+	InstructorDetails tempInstructorDetails = new InstructorDetails("http//;www.youtube.com", "luv2 to code");
+	
+	
+            */
+
+	// create a new student object
+		System.out.println("creating the object");
+	Instructor tempInstructor = new Instructor("buddy","Khatiwada", "aswin.khatiwada1@gmail.com");	
+	InstructorDetails tempInstructorDetails = new InstructorDetails("http//;www.youtube.com", "football");
+	
+	// associate the objects
+	
+	
+	tempInstructor.setInstructorDetail(tempInstructorDetails);
+	
+	// start a transaction
+		session.beginTransaction();
+		
+		
+		//save the student object
+		// note:this will also save the details object because of the cascade type.all
+		
+	System.out.println("saaving the instructor:" +tempInstructor);	
+		session.save(tempInstructor);
+		
+		
+		// commit transaction
+		session.getTransaction().commit();
+		
+	System.out.println("finally done!!");
+		
+	}
+	
+	finally {
+		factory.close();
+	}
+		
+	}
+
+}
+
+// below the code for delete data//
+
+
+
+package main.hibernate.demo;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+
+import com.luv2code.hibernate.demo.Student;
+
+public class DeleteDemo {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+		
+//create sessionFactory
+   SessionFactory factory= new Configuration()
+                           .configure("hibernate.cfg.xml")
+                           .addAnnotatedClass(Instructor.class)
+                           .addAnnotatedClass(InstructorDetails.class)
+                           .buildSessionFactory();
+		
+		
+// create session
+		
+	Session session = factory.getCurrentSession();
+	
+	try {
+		
+		int theId=1;
+		
+	
+	// start a transaction
+		session.beginTransaction();
+		
+		
+		//get instructor by id/primarykey
+		Instructor tempInstructor= session.get(Instructor.class, theId);
+		
+		System.out.println("found instructor" + tempInstructor);
+		
+		// note:this will also save the details object because of the cascade type.all
+		// delete the instructor
+		
+		if(tempInstructor!=null) {
+		System.out.println("deleting the tempinstruction"+ tempInstructor);
+		
+		session.delete(tempInstructor);
+		
+			
+		}
+		
+		
+		// commit transaction
+		session.getTransaction().commit();
+		
+	System.out.println("finally done!!");
+		
+	}
+	
+	finally {
+		factory.close();
+	}
+		
+	}
+
+}
+
+
+
+
+
+
+
