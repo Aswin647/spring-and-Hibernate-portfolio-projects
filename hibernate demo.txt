@@ -35,7 +35,7 @@ public class Testjdbc {
 
 
 
-package database.hibernate.demo;
+com.luv2code.com.hibernate.demo
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -116,7 +116,7 @@ public String toString() {
 
 // below is the code for creating and saving data in database
 
-package main.hibernate.demo;
+com.luv2code.com.hibernate.demo
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -170,7 +170,7 @@ public class CreateStudentDemo {
 
 
 
-package main.hibernate.demo;
+com.luv2code.com.hibernate.demo
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -251,7 +251,7 @@ public class ReadStudentDemo {
 
 // FOR updating,,//
 
-package main.hibernate.demo;
+com.luv2code.com.hibernate.demo
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -326,7 +326,7 @@ public class UpdateStudentDemo {
 
 // FOR querying//
 
-package main.hibernate.demo;
+com.luv2code.com.hibernate.demo
 
 import java.util.List;
 
@@ -413,7 +413,7 @@ public class QueryStudentDemo {
 
 
 
-package main.hibernate.demo;
+com.luv2code.com.hibernate.demo
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
