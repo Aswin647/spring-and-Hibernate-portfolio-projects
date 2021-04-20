@@ -1,0 +1,398 @@
+
+//BELOW IS THE CODE OF FOR ENTERING FORM TAGS WITH SPRING VALIDATION//
+
+package springdemo.mvc;
+
+import java.util.LinkedHashMap;
+
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import com.luv2code.springdemo.mvc.validation.CourseCode;
+public class Student {
+	
+private String firstName;
+
+@NotNull(message="is required")
+@Size(min=1,message="is required")
+private String lastName;
+
+private String country;
+
+private String OperatingSystem;
+
+private LinkedHashMap<String,String> countryOptions;
+
+private String favouriteLanguage;
+public Student() {
+	
+// populate the country code:use iso code standard
+	
+countryOptions = new LinkedHashMap<>();
+
+countryOptions.put("NP","Nepal");
+countryOptions.put("IN","INDIA");
+countryOptions.put("BH","BHUTAN");
+countryOptions.put("PK","PAKISTHAN");
+
+}
+@NotNull(message="is required")
+@Min(value= 0, message="must be greater than or  be equal to zero")
+@Max(value= 10,message="must be less than or equal to 
+private Integer freepasses;
+
+NOTE: MAKE A RESOURCES FILE AS "typeMismatch.student.freepasses=Invalid number" for making an integer field required}
+
+
+@Pattern(regexp="^[a-zA-Z0-9]{5}", message="only 5 chars/digits")
+private int postalcode;
+
+@CourseCode(value="aswin",message="must start with aswin")
+private String CourseCode;
+
+public String getFirstName() {
+	return firstName;
+}
+
+public void setFirstName(String firstName) {
+	this.firstName = firstName;
+}
+
+public String getLastName() {
+	return lastName;
+}
+
+public void setLastName(String lastName) {
+	this.lastName = lastName;
+}
+
+public String getCountry() {
+	return country;
+}
+
+public void setCountry(String country) {
+	this.country = country;
+}
+
+public LinkedHashMap<String, String> getCountryOptions() {
+	return countryOptions;
+}
+
+public void setCountryOptions(LinkedHashMap<String, String> countryOptions) {
+	this.countryOptions = countryOptions;
+}
+
+public String getFavouriteLanguage() {
+	return favouriteLanguage;
+}
+
+public void setFavouriteLanguage(String favouriteLanguage) {
+	this.favouriteLanguage = favouriteLanguage;
+}
+
+public String getOperatingSystem() {
+	return OperatingSystem;
+}
+
+public void setOperatingSystem(String operatingSystem) {
+	OperatingSystem = operatingSystem;
+}
+
+public Integer getFreepasses() {
+	return freepasses;
+}
+
+public void setFreepasses(Integer freepasses) {
+	this.freepasses = freepasses;
+	
+	
+}
+
+public int getPostalcode() {
+	return postalcode;
+}
+
+public void setPostalcode(int postalcode) {
+	this.postalcode = postalcode;
+}
+
+public String getCourseCode() {
+	return CourseCode;
+}
+
+public void setCourseCode(String courseCode) {
+	CourseCode = courseCode;
+}
+
+
+}
+
+
+// BELOW IS THE CODE FOR CONTROLLER WITH SPRING VALIDATION//
+
+
+
+package springdemo.mvc;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+@RequestMapping("/student")
+public class StudentController {
+	
+
+	// add an initbinder ... to convert trim input strings
+	// remove leading and trailing whitespace
+	// resolve issue for our validation
+	
+	
+	@InitBinder
+	public void initBinder(WebDataBinder dataBinder) {
+		
+		StringTrimmerEditor stringTrimmerEditor = new StringTrimmerEditor(true);
+		
+		dataBinder.registerCustomEditor(String.class, stringTrimmerEditor);
+		
+	}
+	
+	
+	
+@RequestMapping("/showForm")
+public String showForm(Model themodel) {
+
+	// create the student object
+	
+Student theStudent=new Student();
+
+//add student object to the model
+
+themodel.addAttribute("student", theStudent);
+return "student-form";
+}
+
+@RequestMapping("/processForm")
+	
+public String processForm(@Valid @ModelAttribute("student") Student thestudent,
+		BindingResult theBindingResult) {
+	System.out.println("Last name: |" + thestudent.getLastName());
+	
+	
+	System.out.println("Binding Result:"+ theBindingResult);
+	
+	System.out.println("\n\n\n\n");
+	
+	if (theBindingResult.hasErrors ()) {
+		return "student-form";
+				
+		}
+	
+	else {
+	
+// log the input data	"
+System.out.println("the student:" +thestudent.getFirstName()
+	+" "+ thestudent.getLastName());  //thestudent.getFreepasses()or again plus for me only the
+//thestudent.getPostalCode);//
+return "student-confirmation";	
+}
+}
+
+}
+
+//BELOW IS THE CODE FOR student-form .JSP//
+
+
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+	<title>Student Registration Form</title>
+	
+	<style> .error {color:red} </style>
+</head>
+
+<body>
+
+	<form:form action="processForm" modelAttribute="student">
+	
+		First name: <form:input path="firstName" />
+		
+		<br><br>
+	
+		Last name: <form:input path="lastName" />
+		<form:errors path="lastName" cssClass="error"/>
+		
+		free passes:<form:input path="freepasses"/>
+			<form:errors path="freepasses" cssClass="error"/>
+		
+		<br><br>
+		
+		postal code:<form:input path="postalcode"/>
+			<form:errors path="postalcode" cssClass="error"/>
+			
+			<br><br>
+		postal code:<form:input path="CourseCode"/>
+			<form:errors path="CourseCode" cssClass="error"/>	
+		
+		
+		country:
+		<form:select path="country">
+	<form:options items="${student.countryOptions }"/>	
+	//
+	
+	
+	<form:option value="Nepal " label="Nepal "/>
+	<form:option value="India " label="India "/>
+	<form:option value="Bhutan " label="Bhutan "/>
+	<form:option value="Pakisthan " label="Pakisthan "/>
+	<form:option value="Maldives " label="Maldives "/>
+	
+	
+	//	
+	</form:select>	
+		 <br><br>
+		 
+		 Favorite Language:
+		
+
+
+
+//BELOW IS THE CODE FOR student-confirmation.jsp//
+
+<%@sp/jstl/core" prefix="c" %> taglib uri="http://java.sun.com/j
+
+<!DOCTYPE html>
+
+<html>
+<head>
+
+<title>
+
+Registration form
+
+</title>
+<body>
+
+the Student message is confirmed: ${ studnet.firstName} ${ studnet.lastName}
+
+<br><br>
+
+free passes:${ student.freepasses}
+
+<br> <br>
+
+postal code:${student.postalcode}
+
+<br> <br>
+country: ${student.country}
+
+<br><br>
+
+choose: ${ student.favouriteLanguage}
+
+<br><br>
+
+course code:${student.CourseCode}
+
+<br><br>
+
+Operating Systems:
+
+<ul>
+	<c:forEach var="temp" items="${student.OperatingSystem}">
+
+		<li> ${temp} </li>
+
+	</c:forEach>
+</ul>
+
+<br><br>
+
+</body>
+
+</head>
+
+</html>
+
+
+// BELOW IS THE CODE FOR CUSTOM CODE FOR VALIDATION//
+
+package springdemo.mvc.validation;
+
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+
+
+	public class courseCodeConstraintValidator implements ConstraintValidator<CourseCode,String>{
+	
+	private String courseprefix;
+
+	@Override
+	public void initialize(CourseCode theCourseCode) {
+		courseprefix = theCourseCode.value();
+	}
+	@Override
+	public boolean isValid (String theCode,ConstraintValidatorContext theConstraintValidatorContext) {
+
+		boolean result;
+		
+		if (theCode != null) {
+			result = theCode.startsWith(courseprefix);
+		}
+		else {
+			result = true;
+		}
+		
+		return result;
+	}
+}
+	
+
+//
+
+//
+
+package springdemo.mvc.validation;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import javax.validation.Constraint;
+import javax.validation.Payload;
+
+@Constraint(validatedBy=courseCodeConstraintValidator.class)
+@Target({ElementType.METHOD,ElementType.FIELD})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface CourseCode {
+	
+	// define default course code
+		public String value() default "LUV";
+		
+		// define default error message
+		public String message() default "must start with LUV";
+		
+		// define default groups
+		public Class<?>[] groups() default {};
+		
+		// define default payloads
+		public Class<? extends Payload>[] payload() default {};	
+
+}
+	
