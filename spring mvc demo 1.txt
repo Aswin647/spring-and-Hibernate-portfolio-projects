@@ -1,0 +1,40 @@
+package springdemo.mvc;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+public class HomeController {
+	
+
+@RequestMapping("/")	
+public String showpage(){
+return "main-menu";	
+	
+}
+
+}
+
+// below is the main-menu.jsp code
+
+<!DOCTYPE> 
+
+<html>
+
+<body>
+
+<h2>SPRING MVC DEMO- HOMEPAGE</h2>
+
+<hr>
+
+<a href="hello/showForm">hello world link</a>
+
+<br><br>
+
+<a href="studnet/showForm">hello world link</a>
+
+
+</body>
+
+
+</html>
